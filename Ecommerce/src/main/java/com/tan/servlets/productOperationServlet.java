@@ -1,25 +1,34 @@
 package com.tan.servlets;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 import org.hibernate.Session;
 
 import com.tan.Dao.CategoryDao;
+import com.tan.Dao.ProductDao;
 import com.tan.entities.Category;
+import com.tan.entities.Product;
 import com.tan.helper.FactoryProvider;
 
 /**
  * Servlet implementation class productOperationServlet
  */
 @WebServlet("/productOperation")
+@MultipartConfig
 public class productOperationServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -80,6 +89,58 @@ public class productOperationServlet extends HttpServlet {
 				return;
 
 			} else if (op.trim().equals("addProduct")) {
+				String pName = request.getParameter("pName");
+				String pDesc = request.getParameter("pDesc");
+				int pPrice = Integer.parseInt(request.getParameter("pPrice"));
+				int pDiscount = Integer.parseInt(request.getParameter("pDiscount"));
+				int pQuantity = Integer.parseInt(request.getParameter("pQuantity"));
+				int catId = Integer.parseInt(request.getParameter("catId"));
+				Part part = request.getPart("pPic");
+				
+				Product p = new Product();
+				p.setpName(pName);
+				p.setpDesc(pDesc);
+				p.setpPrice(pPrice);
+				p.setpDiscount(pDiscount);
+				p.setpQuantity(pQuantity);
+				p.setpPhoto(part.getSubmittedFileName());
+				
+				CategoryDao cDao = new CategoryDao(FactoryProvider.getFactory());
+				
+				Category category = cDao.getCategoryById(catId);
+				
+				p.setCategory(category);
+				
+				ProductDao pDao = new ProductDao(FactoryProvider.getFactory());
+				
+				pDao.saveProduct(p);
+				
+				String path = request.getRealPath("images")+File.separator + "products" + File.separator + part.getSubmittedFileName()	;
+				System.out.println(path);
+				
+				try {
+					FileOutputStream fos = new FileOutputStream(path);
+					InputStream is = part.getInputStream();
+					
+					byte[] data = new byte[is.available()];
+					
+					is.read(data);
+					
+					fos.write(data);
+					fos.close();
+					is.close();
+				} catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+				
+				
+				
+				
+				HttpSession httpSession = request.getSession();
+				httpSession.setAttribute("message", "Product added successfully ");
+				response.sendRedirect("admin.jsp");
+				return;
 
 			}
 

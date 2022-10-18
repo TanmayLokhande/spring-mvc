@@ -22,7 +22,7 @@ public class Product {
 	private String pDesc;
 
 	private String pPhoto;
-	private String pPrice;
+	private int pPrice;
 	private int pQuantity;
 	private int pDiscount;
 	
@@ -34,7 +34,7 @@ public class Product {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Product(String pName, String pDesc, String pPhoto, String pPrice, int pQuantity, int pDiscount,Category category ) {
+	public Product(String pName, String pDesc, String pPhoto, int pPrice, int pQuantity, int pDiscount,Category category ) {
 		super();
 		this.pName = pName;
 		this.pDesc = pDesc;
@@ -85,11 +85,11 @@ public class Product {
 		this.pPhoto = pPhoto;
 	}
 
-	public String getpPrice() {
+	public int getpPrice() {
 		return pPrice;
 	}
 
-	public void setpPrice(String pPrice) {
+	public void setpPrice(int pPrice) {
 		this.pPrice = pPrice;
 	}
 

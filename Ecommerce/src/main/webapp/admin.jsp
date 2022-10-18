@@ -197,8 +197,10 @@ if (user == null) {
 				</div>
 				<div class="modal-body">
 
-					<form>
-
+					<form action="productOperation" method="post" enctype="multipart/form-data">
+						
+						<input type="hidden" name="operation" value="addProduct">
+						
 						<div class="form-group">
 							<input class="form-control" type="text"
 								placeholder="Enter title of product" name="pName" required>
