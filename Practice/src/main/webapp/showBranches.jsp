@@ -1,3 +1,5 @@
+<%@page import="org.hibernate.Session"%>
+<%@page import="org.hibernate.Query"%>
 <%@page import="com.practice.entities.Student1"%>
 <%@page import="com.practice.entities.Branch"%>
 <%@page import="java.util.List"%>
@@ -19,7 +21,18 @@ BranchDao bdao = new BranchDao(FactoryProvider.getFactory());
 List<Branch> branches = bdao.getAllBranches();
 
 for(Branch b: branches){ %>
-	<h1><%=b.getBranch_name() %>
+	<h1><%=b.getBranch_name() %></h1>
+	<% 
+	Session s = FactoryProvider.getFactory().openSession();
+	String hql = "FROM Student1 E WHERE E.branch = :branch_id";
+	Query query = s.createQuery(hql);
+	query.setParameter("branch_id",b);
+	List<Student1> results = query.list();
+	for( Student1 stud:results ){ %>
+		<h2><%= stud.getStudent_name() %></h2>		
+	<% }
+		
+	%>
 <% }
 
 %>
